@@ -6,6 +6,7 @@ import javax.sound.midi.SysexMessage;
 
 public class MidiInputReceiver implements Receiver {
     public String name;
+    protected long lastTimestampInMicroseconds = Long.MIN_VALUE;
 
     public MidiInputReceiver(String name) {
         this.name = name;
@@ -14,19 +15,20 @@ public class MidiInputReceiver implements Receiver {
     @Override
     public void send(MidiMessage message, long timeStamp) {
         if (message instanceof SysexMessage) {
-            System.out.println("Received SysexMessage:");
+            //System.out.println("Received SysexMessage:");
             SysexMessage sysexMessage = (SysexMessage) message;
 
-            System.out.print(sysexMessage.getData()[0] + " ");
-            System.out.print(sysexMessage.getData()[1] + " ");
-            System.out.print(sysexMessage.getData()[2] + " ");
-            System.out.print(sysexMessage.getData()[3] + " ");
-            System.out.print(sysexMessage.getData()[4] + " ");
-            System.out.print(sysexMessage.getData()[5] + " ");
-            System.out.print(sysexMessage.getData()[6] + " ");
-            System.out.print(sysexMessage.getData()[7] + " ");
-            System.out.println(sysexMessage.getData()[8]);
+//            System.out.print(sysexMessage.getData()[0] + " ");
+//            System.out.print(sysexMessage.getData()[1] + " ");
+//            System.out.print(sysexMessage.getData()[2] + " ");
+//            System.out.print(sysexMessage.getData()[3] + " ");
+//            System.out.print(sysexMessage.getData()[4] + " ");
+//            System.out.print(sysexMessage.getData()[5] + " ");
+//            System.out.print(sysexMessage.getData()[6] + " ");
+//            System.out.print(sysexMessage.getData()[7] + " ");
+//            System.out.println(sysexMessage.getData()[8]);
 
+            byte encoder = sysexMessage.getData()[0];
             long microsecondsSinceMidnight = combine(sysexMessage.getData()[1], sysexMessage.getData()[2],
                     sysexMessage.getData()[3], sysexMessage.getData()[4], sysexMessage.getData()[5], sysexMessage.getData()[6]);
 
@@ -44,11 +46,19 @@ public class MidiInputReceiver implements Receiver {
 //            binaerDarstellenVonByte ("", sysexMessage.getData()[6]);
 //            System.out.println();
 
-            System.out.println("Increment: " + combine(sysexMessage.getData()[7], sysexMessage.getData()[8]));
-            //binaerDarstellenVonLong ("", microsecondsSinceMidnight);
 
-            System.out.println("Timestamp in microseconds: " + microsecondsSinceMidnight);
-            System.out.println();
+            int counterA = combine(sysexMessage.getData()[7], sysexMessage.getData()[8]);
+            //System.out.println("Increment: " + counterA);
+            System.out.print(encoder);
+            System.out.print(' ');
+            System.out.print(counterA);
+            System.out.print(' ');
+            //binaerDarstellenVonLong ("", microsecondsSinceMidnight);
+            //System.out.println("Timestamp in microseconds: " + microsecondsSinceMidnight);
+            System.out.print(microsecondsSinceMidnight);
+            System.out.print(' ');
+            System.out.println(microsecondsSinceMidnight - lastTimestampInMicroseconds);
+            lastTimestampInMicroseconds = microsecondsSinceMidnight;
         }
     }
 
@@ -65,7 +75,6 @@ public class MidiInputReceiver implements Receiver {
     }
 
     long combine(byte b1, byte b2, byte b3, byte b4, byte b5, byte b6) {
-
         long res = 0;
         res = (long) b1 << 35;
         res = (res | (long) b2 << 28);
@@ -73,7 +82,6 @@ public class MidiInputReceiver implements Receiver {
         res = (res | (long) b4 << 14);
         res = (res | (long) b5 << 7);
         res = (res | (long) b6);
-
         return res;
     }
 

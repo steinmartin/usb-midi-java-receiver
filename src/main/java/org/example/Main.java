@@ -32,7 +32,7 @@ public class Main {
             int midiDeviceMaxTransmitters = midiDevice.getMaxTransmitters();
             System.out.println("MidiDevice = " + info.getDescription() + ", maxTransmitters = " + midiDeviceMaxTransmitters);
 
-            // The needed device if it has a transmitter (-1 or 1..n) passes the if gate
+            // The correct device by name and if it has a transmitter (-1 or 1..n) passes the if gate
             if (midiDeviceMaxTransmitters != 0 && info.getDescription().equals("Teensy MIDI, USB MIDI, Teensy MIDI")) {
                 midiOutput = midiDevice;
             }
