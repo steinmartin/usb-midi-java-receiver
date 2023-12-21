@@ -1,4 +1,4 @@
-#  MIDI (1.0) Communication test between a potibard (Arduino based microcontroller with optical rotary encoders) and a Java application
+#  MIDI (1.0) Communication test between a potiboard (Arduino based microcontroller with optical rotary encoders) and a Java application
 
  The test focuses on bidirectional MIDI 1.0 communication between the Java application using the MIDI capabilities of the Java Sound API and the Arduino-based microprocessor.
 
