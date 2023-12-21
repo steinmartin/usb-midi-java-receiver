@@ -1,14 +1,19 @@
 #  MIDI (1.0) Communication test between a potibard (Arduino based microcontroller with optical rotary encoders) and a Java application
 
- The test includes bidirectional MIDI 1.0 communication between the Java application using the MIDI capabilities of the Java Sound API and a Arduino-based microprocessor.
- The Arduino code runs on the microprocessor Teensy 4.1. For other microprocessors code adaptions might be necessary.
+ The test focuses on bidirectional MIDI 1.0 communication between the Java application using the MIDI capabilities of the Java Sound API and the Arduino-based microprocessor.
+
+ The MIDI implementation of the Java Sound API is part of every JRE, so no extra dependencies are needed.
+
+ USB-Midi should run on the majority of operating systems out-of-the-box, without the need of configurations or driver installations.
+ 
+The Arduino code runs on the microprocessor Teensy 4.1. For other Arduino based microprocessor types code adaptions might be necessary.
 
 ## Requirements
 
 - Java 17 capable PC with USB Port
 - Teensy 4.1 Microprocessor, other Arduino-based Microprocessor might work
 - Incremental Optical Rotary Encoder, e.g. Grayhill 61KSxx-xxx or or Bourns ENS1J-B28-xxxxxx
-- Level shifter (5V - 3.3V) depending on Microprocessor and Enoder used
+- Level shifter (5V - 3.3V) depending on microprocessor and enoder used
 
 ## Installation
 
@@ -16,15 +21,18 @@ t.b.d.
 
 ## Usage
 
-- Start application in Java IDE (Maven project) and the Arduino Code in Arduino IDE (e.g 2.2)
+1. Connect microcontroller with USB wire to PC
+2. Start the Arduino Code in Arduino IDE (e.g 2.2)
+3. Start application in Java IDE (Maven project) 
 
+The USB-Midi device connection must be established before the Java application starts.
+This is a limitation of the MIDI capabilities of the Java Sound API.
 ## Related Projects
 
 none yet
 
 ## Credits
 
-GSI Helmholtzzentrum für Schwerionenforschung GmbH
 
 ## License
 This project is licensed under the terms of the GNU Lesser General Public License v3.0
