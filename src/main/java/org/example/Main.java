@@ -10,6 +10,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Example to test Java MIDI code to receive rotary encoder increment values and more from an Arduino based Potiboard.
+ * The tested MIDI Sysex message is in 8 byte format, see class MidiInputReceiver for details.
+ * Besides that there is a thread sending constantly a Sysex message to the MIDI-Potiboard to test bidirectional
+ * communication.
+ */
 public class Main {
     private MidiDevice midiDevice;
 
