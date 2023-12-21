@@ -1,8 +1,7 @@
-# Testcase to show the communication of a MIDI 1.0 potibard (Arduino based microcontroller with optical rotary encoders) and a Java application using the MIDI capabilities of the Java Sound API.
+#  MIDI (1.0) Communication test between a potibard (Arduino based microcontroller with optical rotary encoders) and a Java application
 
- The test includes bidirectional MIDI 1.0 communication between the Java application and the Arduino-based microprocessor.
- The Arduino code runs on the microprocessor Teensy 4.1. For other microprocessors code adaptions might be needed.
-
+ The test includes bidirectional MIDI 1.0 communication between the Java application using the MIDI capabilities of the Java Sound API and a Arduino-based microprocessor.
+ The Arduino code runs on the microprocessor Teensy 4.1. For other microprocessors code adaptions might be necessary.
 
 ## Requirements
 
@@ -20,6 +19,7 @@ t.b.d.
 - Start application in Java IDE (Maven project) and the Arduino Code in Arduino IDE (e.g 2.2)
 
 ## Related Projects
+
 none yet
 
 ## Credits
