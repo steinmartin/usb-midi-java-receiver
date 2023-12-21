@@ -4,6 +4,13 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.SysexMessage;
 
+/**
+ * This MidiInputReceiver receives a MIDI sysex message which has
+ * in the first byte the rotary encoder id (1-15) in the following 6 bytes a timestamp of the time passed since midnight
+ * and in the last two bytes the rotary encoder increment value.
+ * Be aware that there is a transformation (in the methods combine()) of the 7bit per byte transport of MIDI
+ * to the 8 bit per byte format of Java.
+ */
 public class MidiInputReceiver implements Receiver {
     public String name;
     protected long lastTimestampInMicroseconds = Long.MIN_VALUE;
@@ -15,7 +22,7 @@ public class MidiInputReceiver implements Receiver {
     @Override
     public void send(MidiMessage message, long timeStamp) {
         if (message instanceof SysexMessage) {
-            //System.out.println("Received SysexMessage:");
+
             SysexMessage sysexMessage = (SysexMessage) message;
 
 //            System.out.print(sysexMessage.getData()[0] + " ");
@@ -48,12 +55,12 @@ public class MidiInputReceiver implements Receiver {
 
 
             int counterA = combine(sysexMessage.getData()[7], sysexMessage.getData()[8]);
-            //System.out.println("Increment: " + counterA);
+
             System.out.print(encoder);
             System.out.print(' ');
             System.out.print(counterA);
             System.out.print(' ');
-            //binaerDarstellenVonLong ("", microsecondsSinceMidnight);
+
             //System.out.println("Timestamp in microseconds: " + microsecondsSinceMidnight);
             System.out.print(microsecondsSinceMidnight);
             System.out.print(' ');
@@ -64,7 +71,7 @@ public class MidiInputReceiver implements Receiver {
 
     @Override
     public void close() {
-        // Nothing
+        this.close();
     }
 
     // assumes hi and lo have top bit clear
@@ -85,13 +92,14 @@ public class MidiInputReceiver implements Receiver {
         return res;
     }
 
-    public static void binaerDarstellenVonByte (String text, byte zahl) {
+
+    //// from here on helper methods to convert bytes to bit format for easier human verification
+    public static void binaerDarstellenVonByte(String text, byte zahl) {
 
         byte maske = 0b00000001;
         char[] bitfolge = new char[8];
 
-        for (int i = 0; i < 8; i++)
-        {
+        for (int i = 0; i < 8; i++) {
             bitfolge[7 - i] = (zahl & maske) == 0 ? '0' : '1';
             maske = (byte) (maske << 1);
         }
@@ -100,14 +108,12 @@ public class MidiInputReceiver implements Receiver {
         System.out.print(bitfolge);
     }
 
-
-    public static void binaerDarstellenVonLong (String text, long zahl) {
+    public static void binaerDarstellenVonLong(String text, long zahl) {
 
         long maske = 0b0000000000000000000000000000000000000000000000000000000000000001;
         char[] bitfolge = new char[64];
 
-        for (int i = 0; i < 64; i++)
-        {
+        for (int i = 0; i < 64; i++) {
             bitfolge[63 - i] = (zahl & maske) == 0 ? '0' : '1';
             maske = maske << 1;
         }
@@ -115,13 +121,13 @@ public class MidiInputReceiver implements Receiver {
         System.out.print(text);
         System.out.println(bitfolge);
     }
-    public static void binaerDarstellenVonInt (String text, int zahl) {
+
+    public static void binaerDarstellenVonInt(String text, int zahl) {
 
         int maske = 0b00000000000000000000000000000001;
         char[] bitfolge = new char[32];
 
-        for (int i = 0; i < 32; i++)
-        {
+        for (int i = 0; i < 32; i++) {
             bitfolge[31 - i] = (zahl & maske) == 0 ? '0' : '1';
             maske = maske << 1;
         }
