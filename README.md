@@ -1,5 +1,7 @@
 #  MIDI (1.0) Communication test between a Potiboard (Arduino based microcontroller with optical rotary encoders) and a Java application
 
+ (Code, although public, is still in development state not yet showing an interesting codebase for a common interested user)
+ 
  The test focuses on bidirectional MIDI 1.0 communication between the Java application using the MIDI capabilities of the Java Sound API and the Arduino-based microprocessor.
 
  The MIDI implementation of the Java Sound API is part of nearly every Java Runtime Environment, so no extra dependencies are needed.
