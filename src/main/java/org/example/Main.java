@@ -5,6 +5,7 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
+import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -58,7 +59,9 @@ public class Main {
             System.out.println("MidiDevice = " + info.getDescription() + ", maxTransmitters = " + midiDeviceMaxTransmitters + ", name = " + info.getName());
 
             // The correct device by name and if it has a transmitter (-1) passes the if gate
-            if (midiDeviceMaxTransmitters == -1 && info.getDescription().equals("Teensy MIDI, USB MIDI, Teensy MIDI")) {
+            // if (midiDeviceMaxTransmitters == -1 && info.getDescription().equals("Teensy MIDI, USB MIDI, Teensy MIDI")) {
+            // Windows 10 Midi name
+            if (midiDeviceMaxTransmitters == -1 && info.getName().equals("Teensy MIDI")) {
                 midiDevice = md;
             }
         }
@@ -82,10 +85,19 @@ public class Main {
      */
     class SendingMidiDataTask implements Runnable {
         private final String taskName;
+        private final Receiver receiver;
 
         public SendingMidiDataTask(String taskName) {
             this.taskName = taskName;
+            try {
+                receiver = MidiSystem.getReceiver();
+                System.out.println("Receiver Name: " + receiver);
+            } catch (MidiUnavailableException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
         }
+
 
         @Override
         public void run() {
@@ -93,15 +105,8 @@ public class Main {
 
             var deviceInfos = MidiSystem.getMidiDeviceInfo();
 
-            try {
-
-                Receiver receiver = MidiSystem.getReceiver();
-                receiver.send(new RawMidiMessage(new byte[]{(byte) 0xF0, (byte) 'G', (byte) 'U', (byte) 'R',
-                        (byte) '5', (byte) 'D', (byte) 'T', (byte) '8', (byte) 0xF7}), -1);
-
-            } catch (MidiUnavailableException e) {
-                e.printStackTrace();
-            }
+            receiver.send(new RawMidiMessage(new byte[]{(byte) 0xF0, (byte) 'G', (byte) 'U', (byte) 'R',
+                    (byte) '5', (byte) 'D', (byte) 'T', (byte) '8', (byte) 0xF7}), -1);
 
 
 //            SysexMessage sysexMessage = new SysexMessage();

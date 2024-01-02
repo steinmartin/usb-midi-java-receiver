@@ -88,7 +88,7 @@ void setup() {
 
   // for receiving data
   usbMIDI.setHandleSystemExclusive(mySystemExclusive);
-  //usbMIDI.setHandleSysEx(myReceiveSysEx);
+  usbMIDI.setHandleSysEx(mySystemExclusive);
   usbMIDI.setHandleNoteOn(OnNoteOn);
 }
 
