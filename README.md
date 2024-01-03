@@ -1,16 +1,12 @@
 #  MIDI (1.0) Communication test between a Potiboard (Arduino based microcontroller with optical rotary encoders) and a Java application
-
  (Code, although public, is still in development state not yet showing an interesting codebase for a common interested user)
- 
  The test focuses on bidirectional MIDI 1.0 communication between a Java application using the MIDI capabilities of the Java Sound API and an Arduino compatible microprocessor.
 
  The MIDI implementation of the Java Sound API is part of nearly every Java Runtime Environment, so no extra dependencies are needed.
-
- USB-MIDI should run on the majority of operating systems out-of-the-box, without the need of OS configurations or driver installations.
+ USB-MIDI should run on the majority of operating systems out-of-the-box, without the need of OS configurations or driver istallations.
  
-The reference Arduino code in this project was developed with the Arduino Software & Libraries compatible microprocessor Teensy 4.1.
-
-For other Arduino compatible microprocessor models code adaptions might be necessary.
+ The reference Arduino code in this project was developed with the Arduino Software & Libraries compatible microprocessor Teensy 4.1.
+ For other Arduino compatible microprocessor models code adaptions might be necessary.
 
 ## Requirements
 - Linux and Win 10/11 (tested), probably other OSs too
@@ -21,7 +17,7 @@ For other Arduino compatible microprocessor models code adaptions might be neces
 - Level shifter (5V - 3.3V) depending on microprocessor and encoder used
 
 ## Installation
-to.be written
+to be written
 
 ## Usage
 1. Connect microcontroller with USB wire to PC
