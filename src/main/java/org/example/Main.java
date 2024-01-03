@@ -1,14 +1,8 @@
 package org.example;
 
-import javax.sound.midi.MidiDevice;
-import javax.sound.midi.MidiMessage;
-import javax.sound.midi.MidiSystem;
-import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.Receiver;
-import javax.swing.plaf.synth.SynthOptionPaneUI;
+import javax.sound.midi.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,7 +12,8 @@ import java.util.concurrent.TimeUnit;
  * communication.
  */
 public class Main {
-    private MidiDevice midiDevice;
+    private MidiDevice midiDeviceIn;
+    private MidiDevice midiDeviceOut;
 
     public static void main(String[] args) {
         new Main().start();
@@ -28,27 +23,29 @@ public class Main {
         try {
             // initialize your usb connected midi output device
             init();
-            if (midiDevice != null) {
-                midiDevice.open();
+            if (midiDeviceIn != null) {
+                midiDeviceIn.open();
 
-                // here we start the receive to get the data (potibard rotary increment counter values) from our MIDI potiboard
+                // here we start to receive to get the data (potibard rotary increment counter values) from our MIDI potiboard
                 // check class MidiInputReceiver
-                midiDevice.getTransmitter().setReceiver(new MidiInputReceiver(midiDevice.toString()));
+                midiDeviceIn.getTransmitter().setReceiver(new MidiInputReceiver(midiDeviceIn.toString()));
             }
-        } catch (
-                MidiUnavailableException mue) {
+            if (midiDeviceOut != null) {
+                midiDeviceOut.open();
+            }
+        } catch (MidiUnavailableException mue) {
             mue.printStackTrace();
             System.exit(0);
         }
 
-        // here we start to simulate sending nomenclature strings to the connected MIDI device
+        // here we start to simulate sending data  to the connected MIDI device
         simulateSendingMidiData();
     }
 
     /**
      * The init shows as example how to connect to a named USB Midi device.
      *
-     * @throws MidiUnavailableException
+     * @throws MidiUnavailableException to halt on MIDI connection problems
      */
     public void init() throws MidiUnavailableException {
         MidiDevice.Info[] midiDevicesInfo = MidiSystem.getMidiDeviceInfo();
@@ -58,23 +55,31 @@ public class Main {
             int midiDeviceMaxTransmitters = md.getMaxTransmitters();
             System.out.println("MidiDevice = " + info.getDescription() + ", maxTransmitters = " + midiDeviceMaxTransmitters + ", name = " + info.getName());
 
-            // The correct device by name and if it has a transmitter (-1) passes the if gate
+            // The correct device by name and if it has a transmitter (-1) passes the 'if gate'
             // if (midiDeviceMaxTransmitters == -1 && info.getDescription().equals("Teensy MIDI, USB MIDI, Teensy MIDI")) {
             // Windows 10 Midi name
-            if (midiDeviceMaxTransmitters == -1 && info.getName().equals("Teensy MIDI")) {
-                midiDevice = md;
+           // if (midiDeviceMaxTransmitters == -1 && info.getName().equals("Teensy MIDIx4")) {
+           if (midiDeviceMaxTransmitters == -1 && info.getName().equals("Teensy MIDI")) {
+                System.out.print("MidiDevice = " + info.getDescription() + ", maxTransmitters = " + midiDeviceMaxTransmitters + ", name = " + info.getName());
+                System.out.println(" for MIDI INPUT detected and initialized");
+                midiDeviceIn= md;
+            }
+
+            if (midiDeviceMaxTransmitters == 0 && info.getName().equals("Teensy MIDI")) {
+                System.out.print("MidiDevice = " + info.getDescription() + ", maxTransmitters = " + midiDeviceMaxTransmitters + ", name = " + info.getName());
+                System.out.println("  for MIDI OUTPUT detected and initialized");
+                midiDeviceOut= md;
             }
         }
     }
-
     void simulateSendingMidiData() {
 
         SendingMidiDataTask sendingMidiDataTask01 = new SendingMidiDataTask("SendingMidiDataTask01");
         SendingMidiDataTask sendingMidiDataTask02 = new SendingMidiDataTask("SendingMidiDataTask02");
 
-        ScheduledExecutorService executorService = Executors
-                .newSingleThreadScheduledExecutor();
-        ScheduledFuture<?> resultFuture = executorService.scheduleAtFixedRate(sendingMidiDataTask01, 100, 500, TimeUnit.MILLISECONDS);
+        ScheduledExecutorService  executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.scheduleAtFixedRate(sendingMidiDataTask01, 100, 500, TimeUnit.MILLISECONDS);
+        executorService.scheduleAtFixedRate(sendingMidiDataTask02, 100, 600, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -90,7 +95,9 @@ public class Main {
         public SendingMidiDataTask(String taskName) {
             this.taskName = taskName;
             try {
-                receiver = MidiSystem.getReceiver();
+                receiver = midiDeviceOut.getReceiver();
+
+                //receiver = MidiSystem.getReceiver();
                 System.out.println("Receiver Name: " + receiver);
             } catch (MidiUnavailableException e) {
                 e.printStackTrace();
@@ -98,31 +105,15 @@ public class Main {
             }
         }
 
-
         @Override
         public void run() {
             System.out.println("Sending Midi from: " + taskName);
 
-            var deviceInfos = MidiSystem.getMidiDeviceInfo();
-
+            //   Here we send a SysEx message for testing
             receiver.send(new RawMidiMessage(new byte[]{(byte) 0xF0, (byte) 'G', (byte) 'U', (byte) 'R',
                     (byte) '5', (byte) 'D', (byte) 'T', (byte) '8', (byte) 0xF7}), -1);
 
-
-//            SysexMessage sysexMessage = new SysexMessage();
-//            Instant instant = Instant.now();
-
-//            @Override
-//            public void run()  {
-//                //System.out.println("Sending Midi from: " + taskName);
-//                Receiver receiver = null;
-//            try {
-//                receiver = MidiSystem.getReceiver();
-//            } catch (MidiUnavailableException e) {
-//                System.err.println("MS: MIDI Device not available: ");
-//                e.printStackTrace();
-//                throw new RuntimeException(e);
-//            }
+            //           Here we send a note for testing
 //            ShortMessage msg = new ShortMessage();
 //            try {
 //                msg.setMessage(ShortMessage.NOTE_ON, 1, 60, 93);
@@ -133,8 +124,6 @@ public class Main {
 //            }
 //            long timeStamp = -1;
 //            receiver.send(msg, timeStamp);
-//        }
-//    }
         }
     }
 

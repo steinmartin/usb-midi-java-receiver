@@ -88,7 +88,7 @@ void setup() {
 
   // for receiving data
   usbMIDI.setHandleSystemExclusive(mySystemExclusive);
-  usbMIDI.setHandleSysEx(mySystemExclusive);
+  //usbMIDI.setHandleSysEx(myReceiveSysEx);
   usbMIDI.setHandleNoteOn(OnNoteOn);
 }
 
@@ -144,7 +144,7 @@ void loop() {
   positionA = positionADivided;
   positionB = positionBDivided;
 
-  //delay(10);
+  delay(10);
 
   usbMIDI.read();
 }
@@ -166,36 +166,36 @@ void mySystemExclusive(byte* data, unsigned int length) {
 }
 
 
-// void myReceiveSysEx(const uint8_t *buffer, uint16_t lenght, boolean flag) {
+void myReceiveSysEx(const uint8_t *buffer, uint16_t lenght, boolean flag) {
 
-//     static int count = 0;
-//     static boolean F0status = false;
-//     static boolean F7status = false;
+    static int count = 0;
+    static boolean F0status = false;
+    static boolean F7status = false;
 
-//     int SysExBuffer[348];
+    int SysExBuffer[348];
 
-//     Serial.print("lenght: ");
-//     Serial.println(lenght);
+    Serial.print("lenght: ");
+    Serial.println(lenght);
 
-//     for (uint16_t i = 0; i < lenght; i++) {
+    for (uint16_t i = 0; i < lenght; i++) {
 
-//         SysExBuffer[count] = buffer[i];
-//         count++;
+        SysExBuffer[count] = buffer[i];
+        count++;
 
-//         if (buffer[i] == 0xF0) {
-//             F0status = true;
-//             Serial.println("F0 status");
-//         }
+        if (buffer[i] == 0xF0) {
+            F0status = true;
+            Serial.println("F0 status");
+        }
 
-//         if (buffer[i] == 0xF7) {
-//             F7status = true;
-//             Serial.println("F7 status");
-//             Serial.print("receive data lenght: ");
-//             Serial.println(count);
-//             count = 0;
-//         }
-//     }
-// }
+        if (buffer[i] == 0xF7) {
+            F7status = true;
+            Serial.println("F7 status");
+            Serial.print("receive data lenght: ");
+            Serial.println(count);
+            count = 0;
+        }
+    }
+}
 
 void printBytes(const byte* data, unsigned int size) {
   while (size > 0) {
@@ -209,7 +209,7 @@ void printBytes(const byte* data, unsigned int size) {
 
 void printChars(const byte* data, unsigned int size) {
   *data++;
-  for (int i = 0; i < size - 2; i++) {
+  for (unsigned int i = 0; i < size - 2; i++) {
     byte b = *data++;
 
     //if (b < 16) Serial.print('0');
