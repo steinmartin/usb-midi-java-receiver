@@ -55,21 +55,30 @@ public class Main {
             int midiDeviceMaxTransmitters = md.getMaxTransmitters();
             System.out.println("MidiDevice = " + info.getDescription() + ", maxTransmitters = " + midiDeviceMaxTransmitters + ", name = " + info.getName());
 
-            // The correct device by name and if it has a transmitter (-1) passes the 'if gate'
-            // if (midiDeviceMaxTransmitters == -1 && info.getDescription().equals("Teensy MIDI, USB MIDI, Teensy MIDI")) {
-            // Windows 10 Midi name
-           // if (midiDeviceMaxTransmitters == -1 && info.getName().equals("Teensy MIDIx4")) {
-           if (midiDeviceMaxTransmitters == -1 && info.getName().equals("Teensy MIDI")) {
+            if (midiDeviceMaxTransmitters == -1 && info.getDescription().equals("Teensy MIDI, USB MIDI, Teensy MIDI")) {
                 System.out.print("MidiDevice = " + info.getDescription() + ", maxTransmitters = " + midiDeviceMaxTransmitters + ", name = " + info.getName());
                 System.out.println(" for MIDI INPUT detected and initialized");
                 midiDeviceIn= md;
             }
 
-            if (midiDeviceMaxTransmitters == 0 && info.getName().equals("Teensy MIDI")) {
+            if (midiDeviceMaxTransmitters == 0 && info.getDescription().equals("Teensy MIDI, USB MIDI, Teensy MIDI")) {
                 System.out.print("MidiDevice = " + info.getDescription() + ", maxTransmitters = " + midiDeviceMaxTransmitters + ", name = " + info.getName());
                 System.out.println("  for MIDI OUTPUT detected and initialized");
                 midiDeviceOut= md;
             }
+
+            // Windows 10 Midi name
+//           if (midiDeviceMaxTransmitters == -1 && info.getName().equals("Teensy MIDI")) {
+//                System.out.print("MidiDevice = " + info.getDescription() + ", maxTransmitters = " + midiDeviceMaxTransmitters + ", name = " + info.getName());
+//                System.out.println(" for MIDI INPUT detected and initialized");
+//                midiDeviceIn= md;
+//            }
+//
+//            if (midiDeviceMaxTransmitters == 0 && info.getName().equals("Teensy MIDI")) {
+//                System.out.print("MidiDevice = " + info.getDescription() + ", maxTransmitters = " + midiDeviceMaxTransmitters + ", name = " + info.getName());
+//                System.out.println("  for MIDI OUTPUT detected and initialized");
+//                midiDeviceOut= md;
+//            }
         }
     }
     void simulateSendingMidiData() {
@@ -95,9 +104,9 @@ public class Main {
         public SendingMidiDataTask(String taskName) {
             this.taskName = taskName;
             try {
-                receiver = midiDeviceOut.getReceiver();
+                //receiver = midiDeviceOut.getReceiver();
 
-                //receiver = MidiSystem.getReceiver();
+                receiver = MidiSystem.getReceiver();
                 System.out.println("Receiver Name: " + receiver);
             } catch (MidiUnavailableException e) {
                 e.printStackTrace();
